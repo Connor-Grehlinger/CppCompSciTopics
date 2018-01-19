@@ -1,0 +1,421 @@
+******************************************
+*** ECE551 Mini Project: Command Shell ***
+*** Connor Grehlinger, netId: cmg88    ***
+******************************************
+
+******************** References/Citations ********************
+- Code for this project was developed using references to:
+-- man pages: waitpid, dup/dup2, open, pipe, getenv/setenv,
+-- fork, evecve, chdir, get_current_dir_name, opendir/closedir
+-- www.cplusplus.com/reference/: string, stringstream, map, and pair
+-- All of Programming by Andrew Hilton and Anne Bracy
+-- Prior ECE551 assignment: 097_dedup
+**************************************************************
+
+
+||-------------------------------------------------------------------------------------------||
+||		             Step-by-step testing instructions				     ||
+||-------------------------------------------------------------------------------------------||
+
+
+- Run make to compile the executable 'myShell'
+
+- Start the shell program, type: './myShell'
+--- Notice that the program begins displaying: 'myShell:/home/cmg88/ece551/mp_miniproject $'.
+--- The shell then waits for user input. This is the correct behavior, as the directory
+--- '/home/cmg88/ece551/mp_miniproject' is where the executable is found. NOTE: this is assuming
+--- the shell is started from the mp_miniproject folder. If the shell program is run outside this
+--- folder, the prompt before user input will still be correct, since the shell object is
+--- initialized with its 'char * working dir' field set to the return value of the
+--- 'get_current_dir_name()' system call.
+
+- NOTE: Programs used for testing can be found in the testPrograms directory.
+
+
+
+*** STEP 1 TESTS: Read a command name, run it  ***
+
+- To begin testing, start by running a basic command. Run the 'helloWorld' program from the shell,
+- which should print "Hello world!" to stdout. Give the full path to the command for this step, for
+- running it on my own machine the command would be:
+- /home/cmg88/ece551/mp_miniproject/testPrograms/helloWorld
+-- Notice that you see "Hello world!" on the line below the entered command, and then "Program exited
+-- with status 0" which indicates that program ran successfully.
+
+- After running this basic command you will see the shell returns to its orginal prompt (the
+- current directory followed by $) and then waits for more input, as per the requirement of step 1.
+
+- Hit enter without typing anything.
+-- You will note that nothing happens and the shell reprints its prompt and waits for more input.
+-- This is the correct behavior, just like bash.
+
+- Type multiple spaces (any arbitrary amount you choose), then type enter.
+-- You will see that again, nothing happens and the shell correctly re-prompts for input.
+
+- Type 'exit' and then hit enter
+-- This terminates the shell program, which is the correct behavior.
+
+- Re-run myShell and type exit again, this time surrounded by spaces
+-- The shell can still correctly parse the command and correctly terminates.
+
+- Re-run myShell
+- Run the command (still with full path before it) 'testPrograms/exitFailure'
+-- This is a simple program with a main function that does nothing but print 'Calling exit(EXIT_FAILURE)...'
+-- and then performs that actual exit(EXIT_FAILURE) call.
+-- Notice that the correct output is printed, and on the following line 'Program exited with status 1'
+-- is seen. This is the correct result since calling exit(EXIT_FAILURE) returns a status of 1, showing
+-- that the shell is correctly determining exit status thus far.
+
+- Run the command 'testPrograms/welcomer.sh' still with the path appended.
+-- This is a simple bash script with a variable that loops and prints 'Welcome $i times!' where i goes
+-- from 1 to 3. The output below the command shows that the shell has ran this script correctly.
+
+
+- Send EOF to exit the shell program, this can be done by entering 'control-D' to the shell prompt.
+-- The shell will still terminate correctly. 
+
+
+
+
+
+*** STEP 2 TESTS: Improving commands ***
+
+- Restart the shell program by running the 'myShell' executable.
+- Now test the shell's ability to run commands by searching via the PATH environment variable.
+- If a command is entered into the shell with out a specified path (i.e. no leading '/' or '.'
+- is entered with the command) then the shell will search for the command and attempt to execute it.
+- If the command is not in found, the shell outputs: Command <whatever command you entered> not found.
+
+- Enter the command: 'echo Hello!'
+-- Observe that the shell prints 'Hello!' below the command, which is correct.
+
+- Enter the command: 'pwd'
+-- Observe that this will display the current path of the shell, which should be identical
+-- to the path in front of the '$' on the line that waits for user input. This is the correct behavior.
+
+- Enter the command: 'ls'
+-- Observe that the command correctly executes, and the contents of the current directory are listed
+-- below the entered command.
+
+- Enter the command: 'env'
+-- Observe that this command correctly executes, and the environment for the shell program is printed.
+
+- Enter the command: 'mkdir testDir'
+- Then enter the command: 'ls'
+-- Notice that a new directory called 'testDir' now appears when the contents of the current directory
+-- are listed. 
+
+- Enter the command: 'rmdir testDir'
+- Then enter the command: 'ls'
+-- Now see that the 'testDir' directory has been removed.
+
+-- All of the above commands exhibit the correct functionality and will display the correct exit
+-- status after running.
+
+- Enter the invalid command: 'bakeACake'
+-- The shell will output 'Command bakeACake not found' which is the correct behavior since 'bakeACake'
+-- is not a real command.
+
+- Enter the invalid command: 'wombo'
+-- The shell will output 'Command wombo not found', which again is the correct functionality.
+
+
+- If a command is entered to the shell and is does specify a path, the shell should only look in that
+- directory for the command. Paths can be relative or absolute.
+
+- Enter the command: '/home/echo'
+-- The shell will correctly output 'Command /home/echo not found' which is correct since the code for
+-- the command echo is in one of the directories listed in the PATH, not /home/.
+
+- Enter the command: '/home/ls'
+-- The shell will correctly output 'Command /home/ls not found'.
+
+- Enter the command: 'helloWrold'
+-- The shell will correctly output 'Command helloWorld not found' which is correct since that program is
+-- only found in the /home/cmg88/ece551/mp_miniproject/testPrograms directory.
+
+- While in the mp_miniproject directory, enter the command './testPrograms/helloWorld'
+-- The shell will correctly output 'Hello world!' after searching the relative path.
+
+- Still in the mp_miniproject directory, enter the command './testPrograms/exitFailure'
+-- You will again see the correct output and exit status for that program.
+
+
+- The shell can also take commands seperated by arbitrary amounts of whitespace. However whitespace that
+- is escaped with a '\' should be literally included in the argument.
+
+- Run the command './testPrograms/argTest a b c 123'
+-- The 'argTest' program takes in an arbitrary amount of arguments and prints each of them to
+-- stdout on its own line with '' around each argument so spaces can be seen in the output.
+-- You will see 'In the argTest program, printing arguments to stdout (cout):'
+-- followed by each of the arguments starting with argv[0], which is the name of the program itself.
+-- './testPrograms/argTest', 'a', 'b', 'c', '123'
+-- This is the correct behavior.
+
+- Run the same command, but with a b c 123 each seperated by arbitrary amounts of whitespace, something like:
+- './testPrograms/argTest      a                 b   c          123      '
+-- You will see that the output is exactly the same as the previous command, which is correct and shows
+-- arbitrary whitespace does not effect the arguments.
+
+- Run the command './testPrograms/argTest a\ b c\ \ 123 '
+-- You will see that the shell correctly included the escaped spaces, and the arguments past argv[0]
+-- are printed as: 'a b' and 'c  123'
+
+- Run the command './testPrograms/argTest a\  b c \ 123'
+-- The shell will output argv[0] and 'a ', 'b', 'c' and ' 123' which is correct.
+
+- Run the command '\  '
+-- The shell will output 'Command   not found' which show the shell correctly parsed the space and
+-- searched for it as a command 
+
+- Run the command './testPrograms/argTest \\ abc'
+-- The shell will output argv[0] and ' abc' which is a valid interpretation of the command (see Piazza @720).
+-- Running the same command with more '\'s in front of abc will produce the same output.
+
+- Run the command './testPrograms/argTest ab\c'
+-- The shell will ignore the '\' character and output argv[0] followed by 'abc' which is stated as
+-- a valid interpretation for the project (Piazza)
+
+- Run the command './testPrograms/argTest \  \  \\  abc \ 123\ 456\ \ 789\ \ \ 0'
+-- The shell will output argv[0] followed by ' ', ' ', ' ', 'abc', and ' 123 456  789   0'
+
+- To test some functionality alltogether thus far, enter the following:
+- 'touch dummy\ file.txt'
+- 'ls' -- notice the file is correctly created and displayed with space
+- 'mkdir this\ is\ a\ dummy\ dir'
+- 'ls' -- see that new directory was correctly created and has appropriate whitespace in name
+- 'cp ./dummy\ file.txt ./this\ is\ a\ dummy\ dir/dummy\ 2.txt'
+- 'ls ./this\ is\ a\ dummy\ dir'
+-- You will see that the shell program has correctly copied the file 'dummy file.txt' into the
+-- 'this is a dummy dir' directory under the new name of 'dummy 2.txt'
+-- This is the correct behavior.
+
+
+
+
+*** STEP 3 TESTS: Directories and Variables ***
+
+
+- Without exiting from the step 2 tests, change the shell's current directory to the newly created one.
+- Run the command 'cd this\ is\ a\ dummy\ dir'
+-- You will see the shell's prompt now expand to include the path to the newly created directory which
+-- is the correct functionality specified in Step 3.
+
+- Run the command 'pwd'
+-- The shell will output 'myShell:/home/cmg88/ece551/mp_miniproject/this is a dummy dir' which is
+-- further verification of the cd command.
+
+- Run the command 'ls'
+-- You will see the 'dummy 2.txt' file you created and stored in this directory previously.
+
+- Run the command 'cd ..'
+-- The path in the shell's prompt correctly changes back to '/home/cmg88/ece551/mp_miniproject'
+-- You can enter 'pwd' again for further varification.
+
+- Run the command 'cd imaginaryDir'
+-- This shell will output 'cd: imaginaryDir: no such directory' which is correct because the directory
+-- imaginaryDir does not exist. 
+
+- Run the command 'cd..'
+-- Now you will be in the '/home/cmg88/ece551' directory. Run 'pwd' and then 'ls' to verify and
+-- you will see all of the assignments for ECE551, which is the correct output.
+
+- Run the command 'cd mp_miniproject' then 'ls'
+-- You will see the contents of the mp_miniproject directory which is correct since the shell
+-- has changed directories back to where it started.
+
+- Run the command 'cd ../../../cmg88/ece551/mp_miniproject/testPrograms'
+- Then run 'pwd'
+-- The shell will output '/home/cmg88/ece551/mp_miniproject/testPrograms' which is correct since
+-- the previous cd command was just a around-about way of changing to that directory.
+
+- Shells should provide access to variables...
+
+- Run the command 'cd..' to go back to the mp_miniproject directory
+- Run the command 'set myVar firstVar'
+-- This adds the variable 'myVar' to the shell, which will have the value 'firstVar'
+
+- Run the command 'echo $myVar'
+-- The shell will output 'firstVar' which shows it has correctly evalutated the 'myVar' variable
+
+- Run the command 'echo $PATH'
+-- The shell will output '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games'
+-- This is correct since that is the value of the PATH environment variable on this machine
+
+- Run the command '$PATH'
+-- The shell will print 'Command /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games not found'
+-- This is correct because the shell has replaced the PATH variable with its value and is now
+-- trying to run a command  
+
+- Run the command 'set var_1 this is variable 1'
+- Run the command ./testPrograms/argTest $var_1
+-- The shell will output argv[0] followed by 'this is variable 1' which is corret because it shows the shell
+-- has properly evaluated the variable argument, the varialbe name is valid, and the spaces in the
+-- variable's value have been included.. 
+
+- Run the command 'set badVar! this shouldn't work'
+-- The shell will output 'Invalid variable: please use only letters, numbers and underscores' which is
+-- correct because 'badVar!' is an invalid variable name according to step 3.
+
+- Run the command 'set A'
+- Run the command './testPrograms/argTest $A'
+-- The shell will output argv[0] as usual followed by ''. This correct because it shows that the variable
+-- 'A' was mapped to an empty string as it should be.
+
+- Run the command 'set B '
+- Run the command './testPrograms/argTest $B'
+-- The shell will output argv[0] as usual followed by ''. This correct because it shows that the variable
+-- 'B' was mapped to an empty string as it should be.
+
+- Run the command 'echo $undeclared1'
+-- The shell will output 'Error: undeclared1 is not a declared variable' which is correct because the
+-- variable has neither been set by the user or is part of the existing environment for the shell
+-- Running any command with an undeclared variable will result in this error no matter how many args.
+
+- Run the command 'set myVarCopy $myVar'
+- Run the command 'echo $myVarCopy'
+-- The shell will output 'firstVar' which correctly shows it created a new variable and set its value to the
+-- value of 'myVar'
+
+- Run the command 'set myVar newVar'
+- Run the command 'echo $myVar'
+-- You will see an output of 'newVar' which is correct since that value has now replaced myVar's old value
+-- of 'firstVar'
+
+- Run the command 'set c !cat!'
+- Run the command 'set d ?dog?'
+- Run the command 'set f #fish#'
+- Run the command './testPrograms/argTest begin $c\ 123$d\ \ 4567$f middle  \ $myVarCopy\ $myVarCopy end'
+-- The shell will output argv[0] followed by: 'begin', '!cat! 123?dog?  4567#fish#', 'middle',
+-- ' firstVar firstVar' and 'end' which is correct because all the variables were added, correctly replaced
+-- and the parsing worked as intended.
+
+- Run the command 'set $myVar $c $d $f'
+- Run the command 'echo $newVar'
+-- The shell will output '!cat! ?dog? #fish#' which is correct because in the set command, $myVar evaluated
+-- to 'newVar' and '$c $d $f' evaluated to their corresponding values seperated by spaces.
+
+- Run the command 'env'
+-- The shell will output its environment, which is the correct behavior for the env command
+
+- Run the command 'export c'
+- Run the command 'env'
+-- The shell will again print out its environment, only now 'c=!cat!' will also appear. This is the correct
+-- behavior based on the specifications of step 3
+
+- Run the command 'export A'
+- Run the command 'env'
+-- The shell prints out it's environment with 'A=' added which is correct.
+
+- Run the command 'export unset_var'
+- Run the command 'env'
+-- The shell prints out it's environment with 'unset_var=' added which is correct because this is the same
+-- behavior as bash
+
+- Run the command 'set c cougar'
+- Run the command 'env'
+-- The shell's environment will be printed with 'c=!cat!' still there, which is correct because the variable
+-- c has not been re-exported yet
+
+- Run the command 'export c'
+- Run the command 'env'
+-- The shell's environment will be printed and c will be updated to the value 'cougar' which is the correct
+-- behavior.
+
+- Run the command 'set PATH /home'
+- Run the command 'echo $d'
+-- The shell will output '?dog?' which is correct because the modified PATH variable has not been exported.
+
+- Run the command 'export PATH'
+- Run the command 'echo $d'
+-- The shell will now output 'Command echo not found' which is correct because with the incorrect PATH
+-- variable now exported to the shell's environment, the shell is searching the wrong directory for the
+-- command echo
+
+
+
+*** STEP 4 TESTS: Pipes and redirection ***
+
+
+*** NOTE: I WAS NOT ABLE TO COMPLETE ALL OFF IMPLEMENT PIPES ***
+THE IMPLEMENT PIPES TESTING SECTION OF STEP 4 WILL ONLY TEST
+BASIC FUNCTIONALITY FOR PARTIAL CREDIT
+
+COMPOUND COMMANDS LIKE: ./myProgram a b c < anInputFile | ./anotherProgram 23 45 > someOutputFile
+OR COMMANDS WITH MULTIPLE PIPES ARE NOT FULLY WORKING, I AM AWARE OF THIS AND TRYING TO GET THE MOST
+EXTRA CREDIT WITH TIME PERMITTING. ***
+
+- Restart myShell if you've altered and exported the PATH variable
+- Run the command './testPrograms/takeStdin < in.txt'
+-- The shell will output 'Now testing stdin redirection' followed by 'string from sdtin is : 'This
+-- is a line of text from the file in.txt'' which is correct because the program takeStdin prints
+-- 'Now testing stdin redirection' and 'the string from stdin is : ' followed by whatever it reads
+-- with getline from std::cin, which was redirected to the file in.txt who's contents is: This is
+-- a line of text from the file in.txt
+
+- Run the command './testPrograms/helloWorld > helloWorld.txt'
+- Run the command 'ls'
+-- You will see the newly created file helloWorld.txt
+- Run the command 'cat helloWorld.txt'
+-- You will see the contents of helloWorld.txt displayed as 'Hello world!' which is correct because
+-- that is what the helloWorld program prints to stdout, which was redirected to a file specified as
+-- helloWorld.txt, which was created since it did not already exist, just like bash.
+
+- Run the command './testPrograms/takeStdin < in.txt > out.txt'
+-- You will only see the exit status of the program since both stdin and stdout have been redirected,
+-- which is the correct behavior
+- Run the command 'cat out.txt'
+-- You will see contents of the out.txt file displayed, which is exactly what was printed to stdout
+-- from the earlier './testPrograms/takeStdin < in.txt' command, 'Now testing stdin redirection'
+-- then 'string from stdin is : 'This is a line of text from the file in.txt''.
+
+- Run the command './testPrograms/errRedir < in.txt 2> err.txt'
+-- You will see the shell output 'In errRedir, this string went to stdout' which is correct because
+-- stdout was not redirected and that is the only output to stdout from the errRedir program.
+- Run the command 'cat err.txt'
+-- The shell will display the contents of the newly created file err.txt, 'Printing this string and
+-- the following input read from stdin to stderr' followed by 'This is a line of text from the file
+-- in.txt'. This shows that the shell correctly had stdin redirected to in.txt for the errRedir
+-- program as well as correctly redirected strerr to the file err.txt.
+
+- Run the command './testPrograms/errRedir < in.txt 2> err1.txt > out1.txt'
+- Run the command 'cat err1.txt'
+-- You will see the same contents as err.txt, which is the correct behavior.
+- Run the command 'cat out1.txt'
+-- You will see it's contents are 'In errRedir, this string with to stdout' which is correct
+-- because that was previous printed to stdout but the shell has successfully redirected it to
+-- out1.txt
+
+-- NOTE: the placement of '<', '>' and '2>' can be in any order and the shell's functionality will
+-- still be correct, see for yourself.
+
+* PIPE PARTS OF STEP 4 THAT WORK *
+
+- Run the command './testPrograms/helloWorld | ./testPrograms/takeStdin'
+-- The shell outputs 'Now testing stdin redirection' then 'string from stdin is : 'Hello world!''
+-- This is correct because the shell pipes the output of the helloWorld process to the input
+-- of the takeStdin process
+
+- Run the command './testPrograms/takeStdin < in.txt | ./testPrograms/takeStdin'
+-- The shell outputs:
+-- 'Now testing stdin redirection'
+-- 'string from stdin is : 'Now testing stdin redirection ''
+-- 'string from stdin is : 'string from stdin is : 'This is a line of text from the file in.txt'''
+-- This is correct because 'Now testing stdin redirection' is the output of the second takeStdin process
+-- prior to reading from stdin and the following lines are what's read from the output of the first
+-- takeStdin process when it gets its input from in.txt
+
+
+** THE FOLLOWING IS PARTIALLY WORKING **
+
+- Run the commnad './testPrograms/takeStdin < in.txt | ./takeStdin > newOut.txt'
+-- 'Now testing stdin redirection' is printed to stdout, which is INCORRECT, as everything should be
+-- collected to newOut.txt. However newOut.txt does collect the output from the first takeStdin call
+
+
+ALL OTHER FUNCTIONALITY, SUCH AS MULTIPLE PIPES AND MULTIPLE PIPES WITH REDIRECTION IS NOT
+WORKING. Simply not enough time and wanted to get the first 3 steps down well.
+
+
+
+

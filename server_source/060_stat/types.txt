@@ -1,0 +1,7 @@
+How to test them special files:
+
+block special file: /dev/sda
+character special file: /dev/null
+symbolic link special file: /dev/fd
+pipe/fifo special file: use mkfifo to make one 
+socket special file: use code to make

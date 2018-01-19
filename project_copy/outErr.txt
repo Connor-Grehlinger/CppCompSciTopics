@@ -1,0 +1,2 @@
+Printing this string and the following input read from stdin to stderr 
+This is a line of text from the file in.txt

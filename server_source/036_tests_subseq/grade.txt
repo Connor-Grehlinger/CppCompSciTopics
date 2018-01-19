@@ -1,0 +1,64 @@
+Grading at 09/17/2017:19:53:11.019485
+For commit ID 9881cb372dadfc64a79944822ce1d55c67ecc743
+**Testing broken implementation 10 **
+-------------------------------------
+
+Bug2. maxSeq(array, 4) calculated to be: 3. Expected answer was: 4.
+
+**Testing broken implementation 11 **
+-------------------------------------
+
+Bug2. maxSeq(array, 10) calculated to be: 5. Expected answer was: 4.
+
+**Testing broken implementation 1 **
+-------------------------------------
+
+Bug2. maxSeq(array, 5) calculated to be: 5. Expected answer was: 1.
+
+**Testing broken implementation 2 **
+-------------------------------------
+
+Bug2. maxSeq(array, 10) calculated to be: 2. Expected answer was: 4.
+
+**Testing broken implementation 3 **
+-------------------------------------
+
+Bug2. maxSeq(array, 13) calculated to be: 14. Expected answer was: 13.
+
+**Testing broken implementation 4 **
+-------------------------------------
+
+Bug2. maxSeq(array, 0) calculated to be: 1. Expected answer was: 0.
+
+**Testing broken implementation 5 **
+-------------------------------------
+
+Bug2. maxSeq(array, 10) calculated to be: 11. Expected answer was: 4.
+
+**Testing broken implementation 6 **
+-------------------------------------
+
+Bug2. maxSeq(array, 5) calculated to be: 0. Expected answer was: 1.
+
+**Testing broken implementation 7 **
+-------------------------------------
+
+Bug2. maxSeq(array, 10) calculated to be: 18446744073709551615. Expected answer was: 4.
+
+**Testing broken implementation 8 **
+-------------------------------------
+
+Bug2. maxSeq(array, 10) calculated to be: 1. Expected answer was: 4.
+
+**Testing broken implementation 9 **
+-------------------------------------
+
+Bug2. maxSeq(array, 10) calculated to be: 2. Expected answer was: 4.
+
+**Testing correct implementation **
+-------------------------------------
+
+
+All test programs were handled correctly
+
+Overall Grade: PASSED

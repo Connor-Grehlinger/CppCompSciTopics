@@ -1,0 +1,107 @@
+Grading at 09/14/2017:19:08:06.730355
+For commit ID 0c92e723b3741198569cc5250d93c5d3194d5569
+**Testing broken implementation 10 **
+-------------------------------------
+
+Testing power(2, 2) and received answer 2; expected 4
+Power function answer did not match expected answer.
+
+**Testing broken implementation 11 **
+-------------------------------------
+
+Testing power(2, 2) and received answer 4; expected 4
+Testing power(15, 2) and received answer 49; expected 225
+Power function answer did not match expected answer.
+
+**Testing broken implementation 1 **
+-------------------------------------
+
+Testing power(2, 2) and received answer 1; expected 4
+Power function answer did not match expected answer.
+
+**Testing broken implementation 2 **
+-------------------------------------
+
+Testing power(2, 2) and received answer 4; expected 4
+Testing power(15, 2) and received answer 32768; expected 225
+Power function answer did not match expected answer.
+
+**Testing broken implementation 3 **
+-------------------------------------
+
+Testing power(2, 2) and received answer 4; expected 4
+Testing power(15, 2) and received answer 225; expected 225
+Testing power(2, 10) and received answer 1024; expected 1024
+Testing power(5, 5) and received answer 3125; expected 3125
+Testing power(99, 0) and received answer 1; expected 1
+Testing power(99, 1) and received answer 99; expected 99
+Testing power(0, 0) and received answer 0; expected 1
+Power function answer did not match expected answer.
+
+**Testing broken implementation 4 **
+-------------------------------------
+
+Testing power(2, 2) and received answer 4; expected 4
+Testing power(15, 2) and received answer 225; expected 225
+Testing power(2, 10) and received answer 1024; expected 1024
+Testing power(5, 5) and received answer 3125; expected 3125
+Testing power(99, 0) and received answer 1; expected 1
+Testing power(99, 1) and received answer 99; expected 99
+Testing power(0, 0) and received answer 1; expected 1
+Testing power(-2, 3) and received answer 65528; expected -8
+Power function answer did not match expected answer.
+
+**Testing broken implementation 5 **
+-------------------------------------
+
+Testing power(2, 2) and received answer 2; expected 4
+Power function answer did not match expected answer.
+
+**Testing broken implementation 6 **
+-------------------------------------
+
+Testing power(2, 2) and received answer 4; expected 4
+Testing power(15, 2) and received answer 4; expected 225
+Power function answer did not match expected answer.
+
+**Testing broken implementation 7 **
+-------------------------------------
+
+Testing power(2, 2) and received answer 9; expected 4
+Power function answer did not match expected answer.
+
+**Testing broken implementation 8 **
+-------------------------------------
+
+Testing power(2, 2) and received answer 4; expected 4
+Testing power(15, 2) and received answer 30; expected 225
+Power function answer did not match expected answer.
+
+**Testing broken implementation 9 **
+-------------------------------------
+
+Testing power(2, 2) and received answer 0; expected 4
+Power function answer did not match expected answer.
+
+**Testing correct implementation **
+-------------------------------------
+
+Testing power(2, 2) and received answer 4; expected 4
+Testing power(15, 2) and received answer 225; expected 225
+Testing power(2, 10) and received answer 1024; expected 1024
+Testing power(5, 5) and received answer 3125; expected 3125
+Testing power(99, 0) and received answer 1; expected 1
+Testing power(99, 1) and received answer 99; expected 99
+Testing power(0, 0) and received answer 1; expected 1
+Testing power(-2, 3) and received answer -8; expected -8
+Testing power(-2, 4) and received answer 16; expected 16
+Testing power(2, 5) and received answer 32; expected 32
+Testing power(4, 0) and received answer 1; expected 1
+Testing power(8, 2) and received answer 64; expected 64
+Testing power(3, 3) and received answer 27; expected 27
+Testing power(2, -1) and received answer 0; expected 0
+
+All tests were ok.
+
+
+Overall Grade: PASSED

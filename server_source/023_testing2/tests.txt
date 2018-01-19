@@ -1,0 +1,58 @@
+aaaaa bbbbb
+aaaab bbbbb
+aaabb bbbbb
+aabbb bbbbb
+abbbb bbbbb
+bbbbb bbbbb
+ccccc ddddu
+ccccc ddduu
+ccccc dduuu
+ccccc duuuu
+ccccc uuuuu
+abcde abcde
+
+e
+ee
+eee
+eeee
+eeeee
+      f
+      ff
+      fff
+      ffff
+      fffff
+
+qwert oiut
+trwer wer
+rewtb fr
+werwx c
+      foooo
+qwert      
+kkkkjk jkdfkd
+uuure oooppu
+90 we
+i     h
+90083 83420
+&^%#@ )(&^%
+      yyyyy
+7&*** 00000
+^^^^^ ^^^^^
+hhhhh errrr
+hhhhh eerrr
+hhhhh eeerr
+hhhhh eeeer
+hhhhh eeeee
+kkkkk uuuuu
+kkkkk uuuui
+kkkkk uuuii
+kkkkk uuiii
+kkjmj uiiii
+mkoin iiiii
+jjjjjjjjjjj
+h u i j l m
+00000 00000
+-1-1- -1-1-
+%%$%$ &*&*&
+@@@@@ ())()
+
+

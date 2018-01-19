@@ -1,0 +1,7 @@
+wizard
+parallel
+apple
+squid
+wombo
+yuke
+cat dog
